@@ -129,3 +129,4 @@ dmypy.json
 .pyre/
 
 kalvis/.idea/*
+*_bak.py

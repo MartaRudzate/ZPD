@@ -2,25 +2,44 @@
 
 # Operatoru pārdefinēšanas piemēri
 # https://www.programiz.com/python-programming/operator-overloading
+
+# Trijstūra režģu koordinātes
 # https://www.mdpi.com/2073-8994/11/2/191/pdf-vor
 
-class Point3d:
+# Laukuma rēķināšana
+# https://www.mathopenref.com/coordpolygonarea.html
+
+import math
+
+class PointTg:
+    # Klases konstruktors - uzstāda visas 3 koordinātes.
+    # Izsaucējs pats atbild, lai x+y+z=0.
+    # Ja koordinātu summa nesaiet 0, tad koordinātes nav pareizas.
     def __init__(self, x=0, y=0, z=0):
         self.x = x
         self.y = y
         self.z = z
 
+    # Smuki izvada
     def __str__(self):
         return "({},{},{})".format(self.x, self.y, self.z)
 
+    # Ar šo funkciju var pieskaitīt pašreizējam punktam izmaiņu "delta" (jauno malu)
     def __add__(self, other):
         x = self.x + other.x
         y = self.y + other.y
         z = self.z + other.z
-        return Point3d(x, y, z)
+        return PointTg(x, y, z)
 
+    # Atgriež trijstūru režģī novilktas malas garumu (ja paralēla režģa līnijām)
+    # Vai nu arī - īsāko ceļu no PointTg virsotnes līdz sākumpunktam (ejot pa trijstūrīšu līnijām)
     def abs(self):
         return max(abs(self.x), abs(self.y), abs(self.z))
+
+
+# Funkcija saņem "vertices" - trijstūrīšu režģa koordinātu sarakstu
+# Funkcija atgriež daudzstūra laukumu (mērītu mazajos trijstūrīšos)
+
 
 def main():
     lis = [[0, 1], [2, 1.0], [3, -1.5], [4, 2.0], [5, -2.5], [6, 3.0], [7, -3.5], [8, 4.0], [9, -4.5], [10, 5.0],
@@ -37,13 +56,13 @@ def main():
     ######################################
     # Piemēri punktiem un pārvietojumiem.
     ######################################
-    p0 = Point3d(0, 0, 0)
+    p0 = PointTg(0, 0, 0)
     # 1 solis uz austrumiem; tas pats kas [0,1]
-    d1 = Point3d(1, 0, -1)
+    d1 = PointTg(1, 0, -1)
     # 2 solis uz ziemeļaustrumiem; tas pats kas [2, 1.0]
-    d2 = Point3d(2, -2, 0)
+    d2 = PointTg(2, -2, 0)
     # 3 soļi uz ziemeļrietumiem; tas pats, kas [3, -1.5]
-    d3 = Point3d(0, -3, 3)
+    d3 = PointTg(0, -3, 3)
 
 
 
@@ -52,25 +71,28 @@ def main():
         LL0 = int(round(ll[0]))
         LL1 = int(round(ll[1]))
         if LL0 == 0:
-            dlist.append(Point3d(LL1, 0, -LL1))
+            dlist.append(PointTg(LL1, 0, -LL1))
         elif LL0*LL1 > 0:
-            dlist.append(Point3d(LL0, -LL0, 0))
+            dlist.append(PointTg(LL0, -LL0, 0))
         elif LL0*LL1 < 0:
-            dlist.append(Point3d(0, -LL0, LL0))
+            dlist.append(PointTg(0, -LL0, LL0))
 
 
     p = p0
     lengths = []
+    vertices = []
     print('p = {}'.format(p))
     for delta in dlist:
         lengths.append(delta.abs())
         p += delta
         print('p = {}'.format(p))
+        vertices.append(p)
 
     if lengths == list(range(1, len(dlist)+1)):
         print('Polimonds apmierina Cibuļa nosacījumu; posmu garumi: {}'.format(lengths))
     else:
         print('Polimonds NEapmierina Cibuļa nosacījumu; posmu garumi: {}'.format(lengths))
+
 
 
 if __name__ == '__main__':
