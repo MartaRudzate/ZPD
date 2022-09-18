@@ -130,3 +130,4 @@ dmypy.json
 
 kalvis/.idea/*
 *_bak.py
+.DS_Store
