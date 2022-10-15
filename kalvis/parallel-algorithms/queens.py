@@ -2,13 +2,20 @@ import copy
 
 # Adapted from https://www.geeksforgeeks.org/n-queen-problem-backtracking-3/
 
-
 class QueenPosition:
+    # An n*n two-dimensional array; board[i][j]==1 iff there is a queen in the i-th row and j-th column.
     board = []
+    # The size of the chessboard.
     n = 1
+    # Remember the latest valid solution.
     latestSolution = []
+    # "breadcrumbs" remember the queen positions in the most recent solution - but unlike "latestSolution" may be overwritten.
+    # "breadcrumbs" allow findNextPosition(...) to avoid re-discovering something multiple times
     breadcrumbs = []
 
+    # Class constructor. "latestSolution" parameter is a list of length n (the latest valid solution).
+    # Normally we resume our search starting from "latestSolution".
+    # If "latestSolution" is unspecified, fill it with [-1,-1,...,-1] - to start from the very beginning.
     def __init__(self, N, latestSolution=None):
         self.n = N
         self.board = [[0] * self.n for k in range(0, self.n)]
@@ -16,14 +23,19 @@ class QueenPosition:
         if latestSolution is None:
             self.latestSolution = [-1] * self.n
         else:
-            self.latestSolution = copy.deepcopy(latestSolution)
+            # self.latestSolution = copy.deepcopy(latestSolution)
+            self.latestSolution = latestSolution
 
+    # Output a solution as a n*n matrix of 0's and 1's (the content of "board").
+    # Here we use "latestSolution" array instead of "board" (as "board" may now contain something else)
     def printLatestSolution(self):
         for i in range(self.n):
             for j in range(self.n):
                 print(int(self.latestSolution[i] == j), end=" ")
             print()
 
+    # Check if the next queen can be safely placed on board[row][col].
+    # Assume that the columns 0,1,...,(col-1) are already occupied by some queens.
     def isSafe(self, row, col):
         # Check this row on left side
         for i in range(col):
@@ -39,18 +51,8 @@ class QueenPosition:
                 return False
         return True
 
-    def findFirst(self, col):
-        if col >= self.n:
-            self.latestSolution = self.compactifySolution()
-            return True
-        for i in range(self.n):
-            if self.isSafe(i, col):
-                self.board[i][col] = 1
-                if self.findFirst(col + 1):
-                    return True
-                self.board[i][col] = 0
-        return False
-
+    # Convert n*n array with 0's and 1's into a list showing where is the queen in every column
+    # For example, self.board = [[0,1,0,0], [0,0,0,1], [1,0,0,0], [0,0,1,0]] converts to result = [1, 3, 0, 2]
     def compactifySolution(self):
         result = [-1] * self.n
         for col in range(0, self.n):
@@ -59,9 +61,8 @@ class QueenPosition:
                     result[col] = i
         return result
 
-    def getLatestSolution(self):
-        return self.latestSolution
-
+    # Return True iff the next position can be found (assigned to "latestSolution").
+    # Otherwise return False: if no new queen can be placed in the column "col".
     def findNextPosition(self, col):
         if col >= self.n:
             self.latestSolution = self.compactifySolution()
@@ -83,49 +84,8 @@ class QueenPosition:
                 # If there is no solution on row "i", remove queen from board[i][col]
                 self.board[i][col] = 0
 
-        # The queen can not be placed in any row in this column
+        # The queen can not be placed in any row in this column.
+        # Backtrack the search and erase breadcrumbs ("board" now remembers the most recent position).
         self.breadcrumbs = [-1] * self.n
         return False
-
-
-def print_solution(board):
-    n = len(board)  # size of the chessboard - number of rows
-    for i in range(n):
-        for j in range(n):
-            print(board[i][j], end=" ")
-        print()
-
-
-# A utility function to check if a queen can be placed on board[row][col].
-# (Assume that "col" queens are already placed in columns from 0 to col-1.)
-def is_safe(board, row, col):
-    n = len(board)
-    # Check this row on left side
-    for i in range(col):
-        if board[row][i] == 1:
-            return False
-    # Check upper diagonal on left side
-    for i, j in zip(range(row, -1, -1), range(col, -1, -1)):
-        if board[i][j] == 1:
-            return False
-    # Check lower diagonal on left side
-    for i, j in zip(range(row, n, 1), range(col, -1, -1)):
-        if board[i][j] == 1:
-            return False
-    return True
-
-
-def solve_nqueens(board, col):
-    n = len(board)
-    # If all queens are placed, then return true
-    if col >= n:
-        return True
-    # Consider this column and try placing this queen in all rows one by one
-    for i in range(n):
-        if is_safe(board, i, col):
-            board[i][col] = 1  # Try to place a queen
-            if solve_nqueens(board, col + 1):  # recurrent call to go deeper
-                return True
-            board[i][col] = 0  # If does not work, remove queen from board[i][col]
-    return False  # Dead end: Cannot place anywhere in the column
 

@@ -15,18 +15,16 @@ def main():
     for n in range(n1, n2+1):
         start_time = time.time()
 
-        board = [[0] * n for k in range(0, n)]
-        solve_nqueens(board, 0)
-        print_solution(board)
-        # qp = QueenPosition(n)
-        # qp.findFirst(0)
-        # qp.printLatestSolution()
+        # Find the first valid position on n*n chessboard
+        qp = QueenPosition(n)
+        qp.findNextPosition(0)
+        qp.printLatestSolution()
 
         end_time = time.time()
         print('---{}: {:.3f} seconds ---'.format(n, end_time - start_time))
         computation_times[n] = round(1000*(end_time - start_time))
 
-    with open('computation_times2.txt', 'a') as file_object:
+    with open('computation_times3.txt', 'a') as file_object:
         file_object.write('N,milliseconds\n')
         for n in range(n1, n2+1):
             file_object.write("{},{}\n".format(n, computation_times[n]))
@@ -42,8 +40,12 @@ def outputAllQueenPositions(N):
     print('all_boards count: {}'.format(len(all_boards)))
 
 if __name__ == '__main__':
+    # Find only the first solution for n*n chessboard (where "n" changes from n1(inclusive) to n2(non-inclusive))
+    # Also log the time spent for finding each solution (depending on the chessboard size "n").
     main()
-    # outputAllQueenPositions(8)
+
+    # Unlike main() - find only the first solution for n*n chessboard, the following line finds all valid solutions
+    # outputAllQueenPositions(4)
 
 
 
