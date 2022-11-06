@@ -26,7 +26,7 @@ def main():
         print('---{}: {:.3f} seconds ---'.format(n, end_time - start_time))
         computation_times[n] = round(1000*(end_time - start_time))
 
-    with open('computation_times2.txt', 'a') as file_object:
+    with open('computation_times3.txt', 'a') as file_object:
         file_object.write('N,milliseconds\n')
         for n in range(n1, n2+1):
             file_object.write("{},{}\n".format(n, computation_times[n]))
@@ -42,8 +42,8 @@ def outputAllQueenPositions(N):
     print('all_boards count: {}'.format(len(all_boards)))
 
 if __name__ == '__main__':
-    main()
-    # outputAllQueenPositions(8)
+    #main()
+    outputAllQueenPositions(14)
 
 
 
