@@ -142,8 +142,7 @@ def main():
 
 if __name__ == '__main__':
     main()
-    #for c in Counter(3, 9):
-    #    print(c)
+
 
 
 
